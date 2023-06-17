@@ -1,0 +1,72 @@
+#include <cstdlib>
+#include <iostream>
+#include <cmath>
+
+#include "../state/state.hpp"
+#include "./alphabeta.hpp"
+
+
+/**
+ * @brief get a legal action according to state value
+ * 
+ * @param state Now state
+ * @param depth You may need this for other policy
+ * @return Move 
+ */
+Move AlphaBeta::get_move(State *state, int depth){
+    if(!state->legal_actions.size())
+        state->get_legal_actions();
+    auto actions = state->legal_actions;
+
+    Move next_move;
+
+    if(depth % 2 == 0){
+        int max = -10000;
+        for(Move next: actions){
+            if(alphabeta(state->next_state(next), depth-1, -10000, 10000, false) > max){
+                next_move = next;
+                max = alphabeta(state->next_state(next), depth-1, -10000, 10000, false);
+            }
+        }
+    }
+    else{
+        int min = 10000;
+        for(Move next: actions){
+            if(-alphabeta(state->next_state(next), depth-1, -10000, 10000, true) < min){
+                next_move = next;
+                min = -alphabeta(state->next_state(next), depth-1, -10000, 10000, true);
+            }
+        }
+    }
+    return next_move;
+}
+
+
+// 按照psuedo code寫
+int AlphaBeta::alphabeta(State* state, int depth, int alpha, int beta, bool maximizing_player){
+
+    if(!state->legal_actions.size())
+        state->get_legal_actions();
+
+    std::vector<Move> actions = state->legal_actions;
+
+    if(depth == 0 || state->game_state == WIN){
+        return state->evaluate();
+    }
+    if(maximizing_player){
+        for(auto n: actions){
+            State* next = state->next_state(n);
+            alpha = std::max(alpha, alphabeta(next, depth-1, alpha, beta, false));
+            if(beta <= alpha) break;
+        }
+        return alpha;
+    }
+    else{
+        for(auto n: actions){
+            State* next = state->next_state(n);
+            beta = std::min(beta, alphabeta(next, depth-1, alpha, beta, true));
+            if(beta <= alpha) break;
+        }
+        return beta;
+    }
+}
