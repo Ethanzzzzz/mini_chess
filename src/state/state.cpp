@@ -6,6 +6,8 @@
 #include "../config.hpp"
 
 
+static const int material_table[7] = {0, 2, 6, 7, 8, 20, 100};
+
 /**
  * @brief evaluate the state
  * 
@@ -13,7 +15,20 @@
  */
 int State::evaluate(){
   // [TODO] design your own evaluation function
-  return 0;
+
+  int value = 0;
+
+  // 根據現有的棋子按照權重加上去
+  auto self_board = this->board.board[this->player];
+  auto oppo_board = this->board.board[1-this->player];
+
+  for(int i=0; i<BOARD_H; i++){
+    for(int j=0; j<BOARD_W; j++){
+      value += material_table[self_board[i][j]-'\0'];
+      value -= material_table[oppo_board[i][j]-'\0'];
+    }
+  }
+  return value;
 }
 
 
@@ -207,14 +222,14 @@ void State::get_legal_actions(){
       }
     }
   }
-  std::cout << "\n";
+  // std::cout << "\n";
   this->legal_actions = all_actions;
 }
 
 
 const char piece_table[2][7][5] = {
   {" ", "♙", "♖", "♘", "♗", "♕", "♔"},
-  {" ", "♟", "♜", "♞", "♝", "♛", "♚"}
+  {" ", "♟", "♜", "♞", "♝", "♛", "♚"},
 };
 /**
  * @brief encode the output for command line output
