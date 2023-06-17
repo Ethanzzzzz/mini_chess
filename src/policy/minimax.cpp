@@ -18,22 +18,23 @@ Move MiniMax::get_move(State *state, int depth){
         state->get_legal_actions();
     auto actions = state->legal_actions;
 
-    int min = std::numeric_limits<int>::max(), max = std::numeric_limits<int>::min();
     Move next_move;
 
     if(depth % 2 == 0){
+        int max = -10000;
         for(Move next: actions){
-            if(minimax(state->next_state(next), depth, false) <= min){
+            if(minimax(state->next_state(next), depth-1, false) > max){
                 next_move = next;
-                min = minimax(state->next_state(next), depth, true);
+                max = minimax(state->next_state(next), depth, false);
             }
         }
     }
     else{
+        int min = 10000;
         for(Move next: actions){
-            if(minimax(state->next_state(next), depth, false) >= max){
+            if(-minimax(state->next_state(next), depth-1, true) < min){
                 next_move = next;
-                max = minimax(state->next_state(next), depth, false);
+                min = -minimax(state->next_state(next), depth, true);
             }
         }
     }
@@ -42,7 +43,7 @@ Move MiniMax::get_move(State *state, int depth){
 
 
 // 按照psuedo code寫
-int MiniMax::minimax(State* state, int depth, bool player){
+int MiniMax::minimax(State* state, int depth, bool maximizing_player){
 
     if(!state->legal_actions.size())
         state->get_legal_actions();
@@ -52,8 +53,8 @@ int MiniMax::minimax(State* state, int depth, bool player){
     if(depth == 0 || state->game_state == WIN){
         return state->evaluate();
     }
-    if(player){
-        int value = std::numeric_limits<int>::min();
+    if(maximizing_player){
+        int value = -10000;
         for(auto n: actions){
             State* next = state->next_state(n);
             value = std::max(value, minimax(next, depth-1, false));
@@ -61,7 +62,7 @@ int MiniMax::minimax(State* state, int depth, bool player){
         return value;
     }
     else{
-        int value = std::numeric_limits<int>::max();
+        int value = 10000;
         for(auto n: actions){
             State* next = state->next_state(n);
             value = std::min(value, minimax(next, depth-1, true));
