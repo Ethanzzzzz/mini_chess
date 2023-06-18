@@ -18,7 +18,7 @@ Move MiniMax::get_move(State *state, int depth){
         state->get_legal_actions();
     auto actions = state->legal_actions;
 
-    Move next_move;
+    Move next_move = actions[0];
 
     if(state->player == 0){
         int max = -100000;

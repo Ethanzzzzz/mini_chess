@@ -18,7 +18,7 @@ Move AlphaBeta::get_move(State *state, int depth){
         state->get_legal_actions();
     auto actions = state->legal_actions;
 
-    Move next_move;
+    Move next_move = actions[0];
 
     if(state->player == 0){
         int max = -1e6;
@@ -54,23 +54,19 @@ int AlphaBeta::alphabeta(State* state, int depth, int alpha, int beta, bool maxi
         return state->evaluate();
     }
     if(maximizing_player){
-        int value = -1e6;
-        for(auto n: actions){
+        for(Move n: actions){
             State* next = state->next_state(n);
-            value = std::max(value, alphabeta(next, depth-1, alpha, beta, false));
-            alpha = std::max(alpha, value);
+            alpha = std::max(alpha, alphabeta(next, depth-1, alpha, beta, false));
             if(alpha >= beta) break;
         }
-        return value;
+        return alpha;
     }
     else{
-        int value = 1e6;
-        for(auto n: actions){
+        for(Move n: actions){
             State* next = state->next_state(n);
-            value = std::min(value, alphabeta(next, depth-1, alpha, beta, true));
-            beta = std::min(beta, value);
+            beta = std::min(beta, alphabeta(next, depth-1, alpha, beta, true));
             if(beta <= alpha) break;
         }
-        return value;
+        return beta;
     }
 }
