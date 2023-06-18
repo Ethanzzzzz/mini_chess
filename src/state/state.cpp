@@ -15,16 +15,15 @@ static const int material_table[7] = {0, 10, 50, 30, 30, 100, 900};
  */
 int State::evaluate(){
   // [TODO] design your own evaluation function
-
   int value = 0;
   // 根據現有的棋子按照權重加上去
-  auto self_board = this->board.board[this->player];
-  auto oppo_board = this->board.board[1-this->player];
+  auto white_board = this->board.board[0];
+  auto black_board = this->board.board[1];
 
   for(int i=0; i<BOARD_H; i++){
     for(int j=0; j<BOARD_W; j++){
-      value += material_table[self_board[i][j]-'\0'];
-      value -= material_table[oppo_board[i][j]-'\0'];
+      value += material_table[white_board[i][j]-'\0'];
+      value -= material_table[black_board[i][j]-'\0'];
     }
   }
   return value;

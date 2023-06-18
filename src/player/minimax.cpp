@@ -42,7 +42,7 @@ void write_valid_spot(std::ofstream& fout) {
   // Keep updating the output until getting killed.
   while(true) {
     // Choose a spot.
-    auto move = MiniMax::get_move(root, 4); // 只能放偶數
+    auto move = MiniMax::get_move(root, 5);
     fout << move.first.first << " " << move.first.second << " "\
          << move.second.first << " " << move.second.second << std::endl;
     

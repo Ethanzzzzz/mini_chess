@@ -20,21 +20,21 @@ Move MiniMax::get_move(State *state, int depth){
 
     Move next_move;
 
-    if(depth % 2 == 0){
-        int max = -10000;
+    if(state->player == 0){
+        int max = -100000;
         for(Move next: actions){
             if(minimax(state->next_state(next), depth-1, false) > max){
                 next_move = next;
-                max = minimax(state->next_state(next), depth, false);
+                max = minimax(state->next_state(next), depth-1, false);
             }
         }
     }
     else{
-        int min = 10000;
+        int min = 100000;
         for(Move next: actions){
-            if(-minimax(state->next_state(next), depth-1, true) < min){
+            if(minimax(state->next_state(next), depth-1, true) < min){
                 next_move = next;
-                min = -minimax(state->next_state(next), depth, true);
+                min = minimax(state->next_state(next), depth-1, true);
             }
         }
     }
@@ -50,19 +50,19 @@ int MiniMax::minimax(State* state, int depth, bool maximizing_player){
 
     std::vector<Move> actions = state->legal_actions;
 
-    if(depth == 0 || state->game_state == WIN){
+    if(depth == 0){
         return state->evaluate();
     }
     if(maximizing_player){
-        int value = -10000;
+        int value = -100000;
         for(auto n: actions){
             State* next = state->next_state(n);
             value = std::max(value, minimax(next, depth-1, false));
         }
         return value;
     }
-    else{
-        int value = 10000;
+    else{   
+        int value = 100000;
         for(auto n: actions){
             State* next = state->next_state(n);
             value = std::min(value, minimax(next, depth-1, true));
