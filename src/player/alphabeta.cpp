@@ -42,7 +42,7 @@ void write_valid_spot(std::ofstream& fout) {
   // Keep updating the output until getting killed.
   while(true) {
     // Choose a spot.
-    auto move = AlphaBeta::get_move(root, 7); // 只能放偶數
+    auto move = AlphaBeta::get_move(root, 5);
     fout << move.first.first << " " << move.first.second << " "\
          << move.second.first << " " << move.second.second << std::endl;
     

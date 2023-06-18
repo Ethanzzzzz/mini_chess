@@ -20,21 +20,21 @@ Move AlphaBeta::get_move(State *state, int depth){
 
     Move next_move;
 
-    if(depth % 2 == 0){
-        int max = -10000;
+    if(state->player == 0){
+        int max = -1e6;
         for(Move next: actions){
-            if(alphabeta(state->next_state(next), depth-1, -10000, 10000, false) > max){
+            if(alphabeta(state->next_state(next), depth-1, -1e6, 1e6, false) > max){
                 next_move = next;
-                max = alphabeta(state->next_state(next), depth-1, -10000, 10000, false);
+                max = alphabeta(state->next_state(next), depth-1, -1e6, 1e6, false);
             }
         }
     }
     else{
-        int min = 10000;
+        int min = 1e6;
         for(Move next: actions){
-            if(-alphabeta(state->next_state(next), depth-1, -10000, 10000, true) < min){
+            if(alphabeta(state->next_state(next), depth-1, -1e6, 1e6, true) < min){
                 next_move = next;
-                min = -alphabeta(state->next_state(next), depth-1, -10000, 10000, true);
+                min = alphabeta(state->next_state(next), depth-1, -1e6, 1e6, true);
             }
         }
     }
@@ -50,23 +50,27 @@ int AlphaBeta::alphabeta(State* state, int depth, int alpha, int beta, bool maxi
 
     std::vector<Move> actions = state->legal_actions;
 
-    if(depth == 0 || state->game_state == WIN){
+    if(depth == 0){
         return state->evaluate();
     }
     if(maximizing_player){
+        int value = -1e6;
         for(auto n: actions){
             State* next = state->next_state(n);
-            alpha = std::max(alpha, alphabeta(next, depth-1, alpha, beta, false));
-            if(beta <= alpha) break;
+            value = std::max(value, alphabeta(next, depth-1, alpha, beta, false));
+            alpha = std::max(alpha, value);
+            if(alpha >= beta) break;
         }
-        return alpha;
+        return value;
     }
     else{
+        int value = 1e6;
         for(auto n: actions){
             State* next = state->next_state(n);
-            beta = std::min(beta, alphabeta(next, depth-1, alpha, beta, true));
+            value = std::min(value, alphabeta(next, depth-1, alpha, beta, true));
+            beta = std::min(beta, value);
             if(beta <= alpha) break;
         }
-        return beta;
+        return value;
     }
 }
