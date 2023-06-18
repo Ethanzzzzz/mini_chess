@@ -37,9 +37,9 @@ static const int piece_value_table[7][BOARD_H][BOARD_W] = {
     {-2, -1, -1, -1, -2} },
   // queen
   { {-2, -1,  0, -1, -2},
-    {-1,  1,  1,  0, -1},
-    { 0,  1,  1,  0,  0},
-    { 0,  1,  1,  0,  0},
+    {-1,  1,  1,  1, -1},
+    { 0,  1,  1,  1,  0},
+    { 0,  1,  1,  1,  0},
     {-1,  1,  0,  0, -1},
     {-2, -1,  0, -1, -2} },
   // king
@@ -68,7 +68,7 @@ int State::evaluate(){
   for(int i=0; i<BOARD_H; i++){
     for(int j=0; j<BOARD_W; j++){
       value += material_table[white_board[i][j]-'\0'];
-      value += piece_value_table[white_board[i][j] - '\0'][i][j];
+      value += 2 * piece_value_table[white_board[i][j] - '\0'][i][j];
       value -= material_table[black_board[i][j]-'\0'];
       value -= piece_value_table[black_board[i][j]-'\0'][5-i][4-j]; // 點對稱
     }
