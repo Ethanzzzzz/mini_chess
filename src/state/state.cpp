@@ -70,7 +70,7 @@ int State::evaluate(){
       value += material_table[white_board[i][j]-'\0'];
       value += 2 * piece_value_table[white_board[i][j] - '\0'][i][j];
       value -= material_table[black_board[i][j]-'\0'];
-      value -= piece_value_table[black_board[i][j]-'\0'][5-i][4-j]; // 點對稱
+      value -= 2 * piece_value_table[black_board[i][j]-'\0'][5-i][4-j]; // 點對稱
     }
   }
   return value;
